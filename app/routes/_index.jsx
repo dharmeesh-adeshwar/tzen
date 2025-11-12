@@ -2,7 +2,9 @@ import {Await, useLoaderData, Link} from 'react-router';
 import {Suspense} from 'react';
 import {Image} from '@shopify/hydrogen';
 import {ProductItem} from '~/components/ProductItem';
-
+import Hero from '~/components/Hero';
+import About from '~/components/About';
+import MiddleVideo from '~/components/MiddleVideo';
 /**
  * @type {Route.MetaFunction}
  */
@@ -13,15 +15,41 @@ export const meta = () => {
 /**
  * @param {Route.LoaderArgs} args
  */
-export async function loader(args) {
-  // Start fetching non-critical data without blocking time to first byte
-  const deferredData = loadDeferredData(args);
 
-  // Await the critical data required to render initial state of the page
-  const criticalData = await loadCriticalData(args);
+// export async function loader({context}) {
+//   const [{collections}, heroData, aboutData, recommendedProducts] = await Promise.all([
+//     context.storefront.query(FEATURED_COLLECTION_QUERY),
+//     context.storefront.query(HERO_QUERY),
+//     context.storefront.query(ABOUT_QUERY),
+//     context.storefront.query(RECOMMENDED_PRODUCTS_QUERY).catch(() => null),
+//   ]);
 
-  return {...deferredData, ...criticalData};
-}
+//   return {
+//     featuredCollection: collections.nodes[0],
+//     recommendedProducts,
+//     heroPage: heroData?.page || null,
+//     aboutPage: aboutData?.page || null,
+//   };
+// }
+
+export async function loader({context}) {
+  const [{collections}, heroData, aboutData, recommendedProducts, middleData] = await Promise.all([
+    context.storefront.query(FEATURED_COLLECTION_QUERY),
+    context.storefront.query(HERO_QUERY),
+    context.storefront.query(ABOUT_QUERY),
+    context.storefront.query(RECOMMENDED_PRODUCTS_QUERY).catch(() => null),
+    context.storefront.query(MIDDLE_QUERY),  // Add the new query here
+  ]);
+
+  return {
+    featuredCollection: collections.nodes[0],
+    recommendedProducts,
+    heroPage: heroData?.page || null,
+    aboutPage: aboutData?.page || null,
+    middlePage: middleData?.page || null,  // Add the result of the middle data
+  };
+}// console.log("Hero Data",heroData)
+
 
 /**
  * Load data necessary for rendering content above the fold. This is the critical data
@@ -64,6 +92,9 @@ export default function Homepage() {
   const data = useLoaderData();
   return (
     <div className="home">
+      <Hero page={data.heroPage} />
+      <About page={data.aboutPage}/>
+      <MiddleVideo page={data.middlePage} />
       <FeaturedCollection collection={data.featuredCollection} />
       <RecommendedProducts products={data.recommendedProducts} />
     </div>
@@ -171,8 +202,78 @@ const RECOMMENDED_PRODUCTS_QUERY = `#graphql
     }
   }
 `;
-
+const HERO_QUERY = `#graphql
+  query HeroSection {
+    page(handle: "home") {
+      id
+      title
+      metafields(identifiers: [
+        {namespace: "hero", key: "image"},
+        {namespace: "hero", key: "logo"},
+        {namespace: "hero", key: "subheadingleft"},
+        {namespace: "hero", key: "subheadingright"}
+        {namespace: "hero", key: "subheadingright2"}
+        {namespace: "hero", key: "subheadingleft2"}
+      ]) {
+        key
+        value
+        type
+        reference {
+          ... on MediaImage {
+            image {
+              url
+              altText
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+const ABOUT_QUERY = `#graphql
+  query AboutSection {
+    page(handle: "home") {
+      id
+      title
+      metafields(identifiers: [
+        {namespace: "about", key: "heading"},
+        {namespace: "about", key: "desc"},
+        {namespace: "about", key: "logo"},
+        {namespace: "about", key: "bgcolor"},
+        {namespace: "about", key: "bgimage"}
+      ]) {
+        key
+        value
+        type
+        reference {
+          ... on MediaImage {
+            image {
+              url
+              altText
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+const MIDDLE_QUERY = `#graphql
+  query MiddleSection {
+    page(handle: "home") {
+      id
+      title
+      metafields(identifiers: [
+        {namespace: "middle", key: "bgvideo"}
+      ]) {
+        key
+        value
+        type
+      }
+    }
+  }
+`;
 /** @typedef {import('./+types/_index').Route} Route */
 /** @typedef {import('storefrontapi.generated').FeaturedCollectionFragment} FeaturedCollectionFragment */
 /** @typedef {import('storefrontapi.generated').RecommendedProductsQuery} RecommendedProductsQuery */
 /** @typedef {import('@shopify/remix-oxygen').SerializeFrom<typeof loader>} LoaderReturnData */
+

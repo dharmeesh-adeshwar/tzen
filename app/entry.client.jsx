@@ -1,5 +1,7 @@
 import {HydratedRouter} from 'react-router/dom';
 import {startTransition, StrictMode} from 'react';
+// Ensure Tailwind CSS is processed by Vite/PostCSS on the client
+import './styles/tailwind.css';
 import {hydrateRoot} from 'react-dom/client';
 import {NonceProvider} from '@shopify/hydrogen';
 

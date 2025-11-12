@@ -7,7 +7,11 @@
   --color-dark: #000;
   --color-light: #fff;
 }
-
+body
+{
+  margin: 0;
+  padding: 0;
+}
 img {
   border-radius: 4px;
 }
