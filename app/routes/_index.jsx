@@ -5,6 +5,8 @@ import {ProductItem} from '~/components/ProductItem';
 import Hero from '~/components/Hero';
 import About from '~/components/About';
 import MiddleVideo from '~/components/MiddleVideo';
+import ProductShowcase from '~/components/ProductShowcase';
+
 /**
  * @type {Route.MetaFunction}
  */
@@ -16,12 +18,14 @@ export const meta = () => {
  * @param {Route.LoaderArgs} args
  */
 
+
 // export async function loader({context}) {
-//   const [{collections}, heroData, aboutData, recommendedProducts] = await Promise.all([
+//   const [{collections}, heroData, aboutData, recommendedProducts, middleData] = await Promise.all([
 //     context.storefront.query(FEATURED_COLLECTION_QUERY),
 //     context.storefront.query(HERO_QUERY),
 //     context.storefront.query(ABOUT_QUERY),
 //     context.storefront.query(RECOMMENDED_PRODUCTS_QUERY).catch(() => null),
+//     context.storefront.query(MIDDLE_QUERY),  // Add the new query here
 //   ]);
 
 //   return {
@@ -29,16 +33,24 @@ export const meta = () => {
 //     recommendedProducts,
 //     heroPage: heroData?.page || null,
 //     aboutPage: aboutData?.page || null,
+//     middlePage: middleData?.page || null,  // Add the result of the middle data
 //   };
-// }
-
-export async function loader({context}) {
-  const [{collections}, heroData, aboutData, recommendedProducts, middleData] = await Promise.all([
+// }// console.log("Hero Data",heroData)
+export async function loader({ context }) {
+  const [
+    { collections },
+    heroData,
+    aboutData,
+    recommendedProducts,
+    middleData,
+    productShowcaseData
+  ] = await Promise.all([
     context.storefront.query(FEATURED_COLLECTION_QUERY),
     context.storefront.query(HERO_QUERY),
     context.storefront.query(ABOUT_QUERY),
     context.storefront.query(RECOMMENDED_PRODUCTS_QUERY).catch(() => null),
-    context.storefront.query(MIDDLE_QUERY),  // Add the new query here
+    context.storefront.query(MIDDLE_QUERY),
+    context.storefront.query(PRODUCT_SHOWCASE_QUERY), // <-- added this
   ]);
 
   return {
@@ -46,9 +58,10 @@ export async function loader({context}) {
     recommendedProducts,
     heroPage: heroData?.page || null,
     aboutPage: aboutData?.page || null,
-    middlePage: middleData?.page || null,  // Add the result of the middle data
+    middlePage: middleData?.page || null,
+    productShowcasePage: productShowcaseData?.page || null,
   };
-}// console.log("Hero Data",heroData)
+}
 
 
 /**
@@ -95,6 +108,7 @@ export default function Homepage() {
       <Hero page={data.heroPage} />
       <About page={data.aboutPage}/>
       <MiddleVideo page={data.middlePage} />
+      <ProductShowcase page={data.productShowcasePage} />
       <FeaturedCollection collection={data.featuredCollection} />
       <RecommendedProducts products={data.recommendedProducts} />
     </div>
@@ -263,15 +277,69 @@ const MIDDLE_QUERY = `#graphql
       id
       title
       metafields(identifiers: [
-        {namespace: "middle", key: "bgvideo"}
+        {namespace: "mid", key: "bgvideo"}
       ]) {
         key
-        value
         type
+        reference {
+          ... on Video {
+            sources {
+              url
+              mimeType
+              format
+              height
+              width
+            }
+            previewImage {
+              url
+            }
+          }
+        }
       }
     }
   }
 `;
+const PRODUCT_SHOWCASE_QUERY = `#graphql
+  query ProductShowcase {
+    page(handle: "home") {
+      id
+      metafields(identifiers: [
+        { namespace: "custom", key: "day_product" }
+        { namespace: "custom", key: "night_product" }
+        { namespace: "custom", key: "day_product_bg" }
+        { namespace: "custom", key: "night_product_bg" }
+        { namespace: "custom", key: "day_other_bg" }
+        { namespace: "custom", key: "night_other_bg" }
+      ]) {
+        key
+        reference {
+          ... on Product {
+            id
+            handle
+            title
+            images(first: 1) {
+              nodes {
+                url
+                altText
+                width
+                height
+              }
+            }
+          }
+          ... on MediaImage {
+            image {
+              url
+              altText
+              width
+              height
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 /** @typedef {import('./+types/_index').Route} Route */
 /** @typedef {import('storefrontapi.generated').FeaturedCollectionFragment} FeaturedCollectionFragment */
 /** @typedef {import('storefrontapi.generated').RecommendedProductsQuery} RecommendedProductsQuery */
