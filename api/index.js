@@ -1,4 +1,5 @@
-import handler from '../dist/server/index.js';
+import handler from '../server.js';
+
 export default {
   fetch: handler.fetch,
 };
