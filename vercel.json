@@ -1,4 +1,10 @@
 {
+  "env": {
+    "PUBLIC_STORE_DOMAIN": "@public-store-domain",
+    "PUBLIC_STOREFRONT_API_TOKEN": "@public-storefront-api-token",
+    "PUBLIC_STOREFRONT_API_VERSION": "@public-storefront-api-version",
+    "SESSION_SECRET": "@session-secret"
+  },
   "builds": [
     {
       "src": "api/index.js",
