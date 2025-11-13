@@ -1,6 +1,7 @@
 import {createHydrogenContext} from '@shopify/hydrogen';
-import {AppSession} from '~/lib/session';
-import {CART_QUERY_FRAGMENT} from '~/lib/fragments';
+// Use relative imports so Node can resolve these at runtime in serverless environments.
+import {AppSession} from './session.js';
+import {CART_QUERY_FRAGMENT} from './fragments.js';
 
 // Define the additional context object
 const additionalContext = {
