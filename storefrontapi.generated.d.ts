@@ -434,6 +434,43 @@ export type MiddleSectionQuery = {
   >;
 };
 
+export type ProductShowcaseQueryVariables = StorefrontAPI.Exact<{
+  [key: string]: never;
+}>;
+
+export type ProductShowcaseQuery = {
+  page?: StorefrontAPI.Maybe<
+    Pick<StorefrontAPI.Page, 'id'> & {
+      metafields: Array<
+        StorefrontAPI.Maybe<
+          Pick<StorefrontAPI.Metafield, 'key'> & {
+            reference?: StorefrontAPI.Maybe<
+              | {
+                  image?: StorefrontAPI.Maybe<
+                    Pick<
+                      StorefrontAPI.Image,
+                      'url' | 'altText' | 'width' | 'height'
+                    >
+                  >;
+                }
+              | (Pick<StorefrontAPI.Product, 'id' | 'handle' | 'title'> & {
+                  images: {
+                    nodes: Array<
+                      Pick<
+                        StorefrontAPI.Image,
+                        'url' | 'altText' | 'width' | 'height'
+                      >
+                    >;
+                  };
+                })
+            >;
+          }
+        >
+      >;
+    }
+  >;
+};
+
 export type ArticleQueryVariables = StorefrontAPI.Exact<{
   articleHandle: StorefrontAPI.Scalars['String']['input'];
   blogHandle: StorefrontAPI.Scalars['String']['input'];
@@ -1289,6 +1326,10 @@ interface GeneratedQueryTypes {
   '#graphql\n  query MiddleSection {\n    page(handle: "home") {\n      id\n      title\n      metafields(identifiers: [\n        {namespace: "mid", key: "bgvideo"}\n      ]) {\n        key\n        type\n        reference {\n          ... on Video {\n            sources {\n              url\n              mimeType\n              format\n              height\n              width\n            }\n            previewImage {\n              url\n            }\n          }\n        }\n      }\n    }\n  }\n': {
     return: MiddleSectionQuery;
     variables: MiddleSectionQueryVariables;
+  };
+  '#graphql\n  query ProductShowcase {\n    page(handle: "home") {\n      id\n      metafields(identifiers: [\n        { namespace: "custom", key: "day_product" }\n        { namespace: "custom", key: "night_product" }\n        { namespace: "custom", key: "day_product_bg" }\n        { namespace: "custom", key: "night_product_bg" }\n        { namespace: "custom", key: "day_other_bg" }\n        { namespace: "custom", key: "night_other_bg" }\n      ]) {\n        key\n        reference {\n          ... on Product {\n            id\n            handle\n            title\n            images(first: 1) {\n              nodes {\n                url\n                altText\n                width\n                height\n              }\n            }\n          }\n          ... on MediaImage {\n            image {\n              url\n              altText\n              width\n              height\n            }\n          }\n        }\n      }\n    }\n  }\n': {
+    return: ProductShowcaseQuery;
+    variables: ProductShowcaseQueryVariables;
   };
   '#graphql\n  query Article(\n    $articleHandle: String!\n    $blogHandle: String!\n    $country: CountryCode\n    $language: LanguageCode\n  ) @inContext(language: $language, country: $country) {\n    blog(handle: $blogHandle) {\n      handle\n      articleByHandle(handle: $articleHandle) {\n        handle\n        title\n        contentHtml\n        publishedAt\n        author: authorV2 {\n          name\n        }\n        image {\n          id\n          altText\n          url\n          width\n          height\n        }\n        seo {\n          description\n          title\n        }\n      }\n    }\n  }\n': {
     return: ArticleQuery;
