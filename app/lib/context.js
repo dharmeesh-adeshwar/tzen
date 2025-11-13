@@ -32,8 +32,14 @@ export async function createHydrogenRouterContext(
   //   throw new Error('SESSION_SECRET environment variable is not set');
   // }
 
-  const waitUntil = executionContext.waitUntil.bind(executionContext);
-  console.log('waitUntil', waitUntil)
+  // const waitUntil = executionContext.waitUntil.bind(executionContext);
+  // console.log('waitUntil', waitUntil)
+  // Vercel does not provide executionContext like Cloudflare does
+const waitUntil =
+  executionContext?.waitUntil?.bind(executionContext) ??
+  (() => Promise.resolve()); // No-op fallback
+
+  
   const [cache, session] = await Promise.all([
     caches.open('hydrogen'),
     AppSession.init(request, [env.SESSION_SECRET]),
