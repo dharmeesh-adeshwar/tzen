@@ -24,6 +24,7 @@ export async function createHydrogenRouterContext(
   env,
   executionContext,
 ) {
+  console.log('_env', env.SESSION_SECRET)
   /**
    * Open a cache instance in the worker and a custom session instance.
    */

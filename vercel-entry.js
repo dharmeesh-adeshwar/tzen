@@ -12,8 +12,7 @@ export default async (req, res) => {
       body: req.method === 'GET' || req.method === 'HEAD' ? undefined : req,
     });
 
-    // 2. Pass process.env as the environment object to the Worker
-    const dummyEnv = process.env; 
+    const dummyEnv = env; 
     const dummyExecutionContext = {
       waitUntil: (promise) => {},
       passThroughOnException: () => {},

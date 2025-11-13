@@ -70,6 +70,7 @@ export async function loader(args) {
   const criticalData = await loadCriticalData(args);
 
   const {storefront, env} = args.context;
+  console.log('SESSION_SECRET', env.SESSION_SECRET)
 
   return {
     ...deferredData,
