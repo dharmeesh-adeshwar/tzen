@@ -1787,7 +1787,7 @@
 
   + interface Env extends HydrogenEnv {}
   - interface Env {
-  -   SESSION_SECRET: string;
+  -  SESSION_SECRET: string;
   -  PUBLIC_STOREFRONT_API_TOKEN: string;
   -  PRIVATE_STOREFRONT_API_TOKEN: string;
   -  PUBLIC_STORE_DOMAIN: string;

@@ -7,6 +7,7 @@ import {createHydrogenRouterContext} from './app/lib/context.js';
  * Export a fetch handler in module format.
  */
 // console.log('🔐 SESSION_SECRET present?', !!process.env.SESSION_SECRET);
+console.log("Environment Variables:", process.env);  // Log all environment variables
 
 export default {
   /**
