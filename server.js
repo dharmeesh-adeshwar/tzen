@@ -1,7 +1,7 @@
 // Virtual entry point for the app
 import {storefrontRedirect} from '@shopify/hydrogen';
 import {createRequestHandler} from '@shopify/hydrogen/oxygen';
-import {createHydrogenRouterContext} from '/app/lib/context.js';
+import {createHydrogenRouterContext} from '../app/lib/context.js';
 // import { createHydrogenContext } from '@shopify/hydrogen';
 /**
  * Export a fetch handler in module format.
