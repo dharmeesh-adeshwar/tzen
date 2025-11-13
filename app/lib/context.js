@@ -33,6 +33,7 @@ export async function createHydrogenRouterContext(
   // }
 
   const waitUntil = executionContext.waitUntil.bind(executionContext);
+  console.log('waitUntil', waitUntil)
   const [cache, session] = await Promise.all([
     caches.open('hydrogen'),
     AppSession.init(request, [env.SESSION_SECRET]),
