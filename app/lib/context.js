@@ -70,6 +70,9 @@ export async function createHydrogenRouterContext(
   executionContext,
 ) {
   console.log('_env', env.SESSION_SECRET);
+  console.log('Store Domain:', env.PUBLIC_STORE_DOMAIN);
+  console.log('Storefront Token:', env.PUBLIC_STOREFRONT_API_TOKEN);
+  console.log('Storefront API Version:', env?.PUBLIC_STOREFRONT_API_VERSION);
 
   // Safe waitUntil fallback
   const waitUntil =

@@ -23,7 +23,9 @@ export default async function handleRequest(
       storeDomain: context.env.PUBLIC_STORE_DOMAIN,
     },
   });
-
+  console.log('context.env.PUBLIC_STORE_DOMAIN', context.env.PUBLIC_STORE_DOMAIN)
+  
+  // console.log('storeDomain', storeDomain)
   const body = await renderToReadableStream(
     <NonceProvider>
       <ServerRouter
