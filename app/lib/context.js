@@ -19,29 +19,82 @@ const additionalContext = {
  * @param {Env} env
  * @param {ExecutionContext} executionContext
  */
+// export async function createHydrogenRouterContext(
+//   request,
+//   env,
+//   executionContext,
+// ) {
+//   console.log('_env', env.SESSION_SECRET)
+//   /**
+//    * Open a cache instance in the worker and a custom session instance.
+//    */
+//   // if (!env?.SESSION_SECRET) {
+//   //   throw new Error('SESSION_SECRET environment variable is not set');
+//   // }
+
+//   // const waitUntil = executionContext.waitUntil.bind(executionContext);
+//   // console.log('waitUntil', waitUntil)
+//   // Vercel does not provide executionContext like Cloudflare does
+// const waitUntil =
+//   executionContext?.waitUntil?.bind(executionContext) ??
+//   (() => Promise.resolve()); // No-op fallback
+
+
+//   const [cache, session] = await Promise.all([
+//     caches.open('hydrogen'),
+//     AppSession.init(request, [env.SESSION_SECRET]),
+//     console.log('cachees', caches)
+//   ]);
+  
+//   const hydrogenContext = createHydrogenContext(
+//     {
+//       env,
+//       request,
+//       cache,
+//       waitUntil,
+//       session,
+//       // Or detect from URL path based on locale subpath, cookies, or any other strategy
+//       i18n: {language: 'EN', country: 'US'},
+//       cart: {
+//         queryFragment: CART_QUERY_FRAGMENT,
+//       },
+//     },
+//     additionalContext,
+//   );
+
+//   return hydrogenContext;
+// }
 export async function createHydrogenRouterContext(
   request,
   env,
   executionContext,
 ) {
-  console.log('_env', env.SESSION_SECRET)
-  /**
-   * Open a cache instance in the worker and a custom session instance.
-   */
-  // if (!env?.SESSION_SECRET) {
-  //   throw new Error('SESSION_SECRET environment variable is not set');
-  // }
+  console.log('_env', env.SESSION_SECRET);
 
-  // const waitUntil = executionContext.waitUntil.bind(executionContext);
-  // console.log('waitUntil', waitUntil)
-  // Vercel does not provide executionContext like Cloudflare does
-const waitUntil =
-  executionContext?.waitUntil?.bind(executionContext) ??
-  (() => Promise.resolve()); // No-op fallback
+  // Safe waitUntil fallback
+  const waitUntil =
+    executionContext?.waitUntil?.bind(executionContext) ??
+    (() => Promise.resolve());
 
-  
+  // ✅ Provide cache fallback for Node (Vercel)
+  const cacheStorage =
+    typeof caches !== 'undefined'
+      ? caches
+      : {
+          open: async () => {
+            const memoryCache = new Map();
+            return {
+              match: (key) => Promise.resolve(memoryCache.get(key)),
+              put: (key, value) => {
+                memoryCache.set(key, value);
+                return Promise.resolve();
+              },
+            };
+          },
+        };
+
   const [cache, session] = await Promise.all([
-    caches.open('hydrogen'),
+    cacheStorage.open('hydrogen'),
     AppSession.init(request, [env.SESSION_SECRET]),
   ]);
 
@@ -52,7 +105,6 @@ const waitUntil =
       cache,
       waitUntil,
       session,
-      // Or detect from URL path based on locale subpath, cookies, or any other strategy
       i18n: {language: 'EN', country: 'US'},
       cart: {
         queryFragment: CART_QUERY_FRAGMENT,
