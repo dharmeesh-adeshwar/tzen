@@ -1,7 +1,10 @@
 // Virtual entry point for the app
 import {storefrontRedirect} from '@shopify/hydrogen';
 import {createRequestHandler} from '@shopify/hydrogen/oxygen';
-import {createHydrogenRouterContext} from '~/lib/context';
+// Use a relative import here so Node (and serverless runtimes) can resolve the file
+// at runtime. The `~` alias is handled by Vite during the build step but is not
+// available to Node when executing the source file on the server.
+import {createHydrogenRouterContext} from './app/lib/context.js';
 
 /**
  * Export a fetch handler in module format.
