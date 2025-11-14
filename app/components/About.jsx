@@ -22,7 +22,7 @@ export default function About({ page }) {
     <>
     <section
       style={{ backgroundColor: bgColor }}
-      className="w-full"
+      className="w-full p-8"
     >
       <div className="max-w-full px-8 mx-auto flex flex-col justify-between h-full min-h-[50vh]">
         {/* Top Row: heading + logo */}

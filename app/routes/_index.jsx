@@ -6,6 +6,8 @@ import Hero from '~/components/Hero';
 import About from '~/components/About';
 import MiddleVideo from '~/components/MiddleVideo';
 import ProductShowcase from '~/components/ProductShowcase';
+import FeaturedProduct from '~/components/FeaturedProduct';
+import Principles from '~/components/Principles';
 
 /**
  * @type {Route.MetaFunction}
@@ -43,7 +45,9 @@ export async function loader({ context }) {
     aboutData,
     recommendedProducts,
     middleData,
-    productShowcaseData
+    productShowcaseData,
+    featuredProductData,
+    principlesData
   ] = await Promise.all([
     context.storefront.query(FEATURED_COLLECTION_QUERY),
     context.storefront.query(HERO_QUERY),
@@ -51,6 +55,8 @@ export async function loader({ context }) {
     context.storefront.query(RECOMMENDED_PRODUCTS_QUERY).catch(() => null),
     context.storefront.query(MIDDLE_QUERY),
     context.storefront.query(PRODUCT_SHOWCASE_QUERY), // <-- added this
+    context.storefront.query(FEATURED_PRODUCT_QUERY),
+    context.storefront.query(PRINCIPLES_QUERY),
   ]);
 
   return {
@@ -60,6 +66,8 @@ export async function loader({ context }) {
     aboutPage: aboutData?.page || null,
     middlePage: middleData?.page || null,
     productShowcasePage: productShowcaseData?.page || null,
+    featuredProductPage: featuredProductData?.page || null,
+    principlesPage: principlesData?.page || null,
   };
 }
 
@@ -109,6 +117,8 @@ export default function Homepage() {
       <About page={data.aboutPage}/>
       <MiddleVideo page={data.middlePage} />
       <ProductShowcase page={data.productShowcasePage} />
+      <FeaturedProduct page={data.featuredProductPage} />
+      <Principles page={data.principlesPage} />
       <FeaturedCollection collection={data.featuredCollection} />
       <RecommendedProducts products={data.recommendedProducts} />
     </div>
@@ -317,6 +327,7 @@ const PRODUCT_SHOWCASE_QUERY = `#graphql
             id
             handle
             title
+            descriptionHtml
             images(first: 1) {
               nodes {
                 url
@@ -339,6 +350,63 @@ const PRODUCT_SHOWCASE_QUERY = `#graphql
     }
   }
 `;
+const FEATURED_PRODUCT_QUERY = `#graphql
+  query FeaturedProduct {
+    page(handle: "home") {
+      id
+      metafields(identifiers: [
+        { namespace: "custom", key: "featured_product" }
+        { namespace: "custom", key: "featured_product_text1" }
+        { namespace: "custom", key: "featured_product_text2" }
+        { namespace: "custom", key: "featured_product_text3" }
+      ]) {
+        key
+        value
+        reference {
+          ... on MediaImage {
+            image {
+              url
+              altText
+              width
+              height
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+const PRINCIPLES_QUERY = `#graphql
+  query Principles {
+    page(handle: "home") {
+      id
+      metafields(identifiers: [
+        { namespace: "principal", key: "heading_left" },
+        { namespace: "principal", key: "desc_left" },
+        { namespace: "principal", key: "image_left" },
+        { namespace: "principal", key: "heading_center" },
+        { namespace: "principal", key: "desc_center" },
+        { namespace: "principal", key: "image_center" },
+        { namespace: "principal", key: "heading_right" },
+        { namespace: "principal", key: "desc_right" },
+        { namespace: "principal", key: "image_right" }
+      ]) {
+        key
+        value
+        reference {
+          ... on MediaImage {
+            image {
+              url
+              altText
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+
 
 /** @typedef {import('./+types/_index').Route} Route */
 /** @typedef {import('storefrontapi.generated').FeaturedCollectionFragment} FeaturedCollectionFragment */
