@@ -8,6 +8,9 @@ import MiddleVideo from '~/components/MiddleVideo';
 import ProductShowcase from '~/components/ProductShowcase';
 import FeaturedProduct from '~/components/FeaturedProduct';
 import Principles from '~/components/Principles';
+import FooterHeader from '~/components/FooterHeader';
+import Footer2 from '~/components/Footer2';
+import Shop from '~/components/Shop';
 
 /**
  * @type {Route.MetaFunction}
@@ -21,23 +24,6 @@ export const meta = () => {
  */
 
 
-// export async function loader({context}) {
-//   const [{collections}, heroData, aboutData, recommendedProducts, middleData] = await Promise.all([
-//     context.storefront.query(FEATURED_COLLECTION_QUERY),
-//     context.storefront.query(HERO_QUERY),
-//     context.storefront.query(ABOUT_QUERY),
-//     context.storefront.query(RECOMMENDED_PRODUCTS_QUERY).catch(() => null),
-//     context.storefront.query(MIDDLE_QUERY),  // Add the new query here
-//   ]);
-
-//   return {
-//     featuredCollection: collections.nodes[0],
-//     recommendedProducts,
-//     heroPage: heroData?.page || null,
-//     aboutPage: aboutData?.page || null,
-//     middlePage: middleData?.page || null,  // Add the result of the middle data
-//   };
-// }// console.log("Hero Data",heroData)
 export async function loader({ context }) {
   const [
     { collections },
@@ -47,7 +33,10 @@ export async function loader({ context }) {
     middleData,
     productShowcaseData,
     featuredProductData,
-    principlesData
+    principlesData,
+    footerHeaderData,
+    footerData,
+    shopData
   ] = await Promise.all([
     context.storefront.query(FEATURED_COLLECTION_QUERY),
     context.storefront.query(HERO_QUERY),
@@ -57,6 +46,9 @@ export async function loader({ context }) {
     context.storefront.query(PRODUCT_SHOWCASE_QUERY), // <-- added this
     context.storefront.query(FEATURED_PRODUCT_QUERY),
     context.storefront.query(PRINCIPLES_QUERY),
+    context.storefront.query(FOOTERHEADER_QUERY),
+    context.storefront.query(FOOTER_QUERY),
+    context.storefront.query(SHOP_QUERY)
   ]);
 
   return {
@@ -68,6 +60,10 @@ export async function loader({ context }) {
     productShowcasePage: productShowcaseData?.page || null,
     featuredProductPage: featuredProductData?.page || null,
     principlesPage: principlesData?.page || null,
+    footerHeaderPage: footerHeaderData?.page || null,
+    footerPage: footerData?.page || null,
+    shopPage: shopData?.page || null
+
   };
 }
 
@@ -119,6 +115,9 @@ export default function Homepage() {
       <ProductShowcase page={data.productShowcasePage} />
       <FeaturedProduct page={data.featuredProductPage} />
       <Principles page={data.principlesPage} />
+      <FooterHeader page={data.footerHeaderPage} />
+      <Shop page={data.shopPage} />
+      <Footer2 page={data.footerPage} />
       <FeaturedCollection collection={data.featuredCollection} />
       <RecommendedProducts products={data.recommendedProducts} />
     </div>
@@ -235,8 +234,8 @@ const HERO_QUERY = `#graphql
         {namespace: "hero", key: "image"},
         {namespace: "hero", key: "logo"},
         {namespace: "hero", key: "subheadingleft"},
-        {namespace: "hero", key: "subheadingright"}
-        {namespace: "hero", key: "subheadingright2"}
+        {namespace: "hero", key: "subheadingright"},
+        {namespace: "hero", key: "subheadingright2"},
         {namespace: "hero", key: "subheadingleft2"}
       ]) {
         key
@@ -314,11 +313,11 @@ const PRODUCT_SHOWCASE_QUERY = `#graphql
     page(handle: "home") {
       id
       metafields(identifiers: [
-        { namespace: "custom", key: "day_product" }
-        { namespace: "custom", key: "night_product" }
-        { namespace: "custom", key: "day_product_bg" }
-        { namespace: "custom", key: "night_product_bg" }
-        { namespace: "custom", key: "day_other_bg" }
+        { namespace: "custom", key: "day_product" },
+        { namespace: "custom", key: "night_product" },
+        { namespace: "custom", key: "day_product_bg" },
+        { namespace: "custom", key: "night_product_bg" },
+        { namespace: "custom", key: "day_other_bg" },
         { namespace: "custom", key: "night_other_bg" }
       ]) {
         key
@@ -355,9 +354,9 @@ const FEATURED_PRODUCT_QUERY = `#graphql
     page(handle: "home") {
       id
       metafields(identifiers: [
-        { namespace: "custom", key: "featured_product" }
-        { namespace: "custom", key: "featured_product_text1" }
-        { namespace: "custom", key: "featured_product_text2" }
+        { namespace: "custom", key: "featured_product" },
+        { namespace: "custom", key: "featured_product_text1" },
+        { namespace: "custom", key: "featured_product_text2" },
         { namespace: "custom", key: "featured_product_text3" }
       ]) {
         key
@@ -389,7 +388,8 @@ const PRINCIPLES_QUERY = `#graphql
         { namespace: "principal", key: "image_center" },
         { namespace: "principal", key: "heading_right" },
         { namespace: "principal", key: "desc_right" },
-        { namespace: "principal", key: "image_right" }
+        { namespace: "principal", key: "image_right" },
+        { namespace: "principal", key: "bgcolor" }
       ]) {
         key
         value
@@ -398,6 +398,90 @@ const PRINCIPLES_QUERY = `#graphql
             image {
               url
               altText
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+const FOOTERHEADER_QUERY = `#graphql
+  query FOOTERHEADER {
+    page(handle: "home") {
+      id
+      metafields(identifiers: [
+        { namespace: "custom", key: "footer_header" },
+        { namespace: "custom", key: "footer_header_bg" },
+      ]) {
+        key
+        value
+        reference {
+          ... on MediaImage {
+            image {
+              url
+              altText
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+const FOOTER_QUERY = `#graphql
+  query Footer {
+    page(handle: "home") {
+      id
+      metafields(identifiers: [
+        { namespace: "footer", key: "headline" },
+        { namespace: "footer", key: "copyright" },
+        { namespace: "footer", key: "logo" },
+        { namespace: "footer", key: "link" },
+        { namespace: "footer", key: "bg" }
+      ]) {
+        key
+        value
+
+        reference {
+          ... on MediaImage {
+            image {
+              url
+              altText
+              width
+              height
+            }
+          }
+        }
+
+        references(first: 20) {
+          nodes {
+            ... on Page {
+              id
+              title
+              handle
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+const SHOP_QUERY = `#graphql
+  query Shop {
+    page(handle: "home") {
+      metafields(identifiers: [
+        { namespace: "shop", key: "light" },
+        { namespace: "shop", key: "dark" },
+        { namespace: "shop", key: "text" }
+      ]) {
+        key
+        value
+        reference {
+          ... on MediaImage {
+            image {
+              url
+              altText
+              width
+              height
             }
           }
         }
