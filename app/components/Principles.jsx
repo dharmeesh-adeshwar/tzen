@@ -6,7 +6,8 @@ export default function Principles({ page }) {
   );
 
   return (
-    <section className="h-screen w-full bg-[#f5efe4] flex items-center justify-center">
+    <section className="h-screen w-full  flex items-center justify-center"
+    style={{ backgroundColor: fields.bgcolor?.value }}>
       <div className=" h-full grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
         
         {/* Block 1 */}
