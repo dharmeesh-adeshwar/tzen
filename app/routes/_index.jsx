@@ -8,9 +8,6 @@ import MiddleVideo from '~/components/MiddleVideo';
 import ProductShowcase from '~/components/ProductShowcase';
 import FeaturedProduct from '~/components/FeaturedProduct';
 import Principles from '~/components/Principles';
-import FooterHeader from '~/components/FooterHeader';
-import Footer2 from '~/components/Footer2';
-import Shop from '~/components/Shop';
 
 /**
  * @type {Route.MetaFunction}
@@ -33,10 +30,7 @@ export async function loader({ context }) {
     middleData,
     productShowcaseData,
     featuredProductData,
-    principlesData,
-    footerHeaderData,
-    footerData,
-    shopData
+    principlesData
   ] = await Promise.all([
     context.storefront.query(FEATURED_COLLECTION_QUERY),
     context.storefront.query(HERO_QUERY),
@@ -46,9 +40,6 @@ export async function loader({ context }) {
     context.storefront.query(PRODUCT_SHOWCASE_QUERY), // <-- added this
     context.storefront.query(FEATURED_PRODUCT_QUERY),
     context.storefront.query(PRINCIPLES_QUERY),
-    context.storefront.query(FOOTERHEADER_QUERY),
-    context.storefront.query(FOOTER_QUERY),
-    context.storefront.query(SHOP_QUERY)
   ]);
 
   return {
@@ -60,10 +51,6 @@ export async function loader({ context }) {
     productShowcasePage: productShowcaseData?.page || null,
     featuredProductPage: featuredProductData?.page || null,
     principlesPage: principlesData?.page || null,
-    footerHeaderPage: footerHeaderData?.page || null,
-    footerPage: footerData?.page || null,
-    shopPage: shopData?.page || null
-
   };
 }
 
@@ -115,9 +102,6 @@ export default function Homepage() {
       <ProductShowcase page={data.productShowcasePage} />
       <FeaturedProduct page={data.featuredProductPage} />
       <Principles page={data.principlesPage} />
-      <FooterHeader page={data.footerHeaderPage} />
-      <Shop page={data.shopPage} />
-      <Footer2 page={data.footerPage} />
       <FeaturedCollection collection={data.featuredCollection} />
       <RecommendedProducts products={data.recommendedProducts} />
     </div>
@@ -420,68 +404,6 @@ const FOOTERHEADER_QUERY = `#graphql
             image {
               url
               altText
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-const FOOTER_QUERY = `#graphql
-  query Footer {
-    page(handle: "home") {
-      id
-      metafields(identifiers: [
-        { namespace: "footer", key: "headline" },
-        { namespace: "footer", key: "copyright" },
-        { namespace: "footer", key: "logo" },
-        { namespace: "footer", key: "link" },
-        { namespace: "footer", key: "bg" }
-      ]) {
-        key
-        value
-
-        reference {
-          ... on MediaImage {
-            image {
-              url
-              altText
-              width
-              height
-            }
-          }
-        }
-
-        references(first: 20) {
-          nodes {
-            ... on Page {
-              id
-              title
-              handle
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-const SHOP_QUERY = `#graphql
-  query Shop {
-    page(handle: "home") {
-      metafields(identifiers: [
-        { namespace: "shop", key: "light" },
-        { namespace: "shop", key: "dark" },
-        { namespace: "shop", key: "text" }
-      ]) {
-        key
-        value
-        reference {
-          ... on MediaImage {
-            image {
-              url
-              altText
-              width
-              height
             }
           }
         }
