@@ -33,11 +33,12 @@ const maskClipPath = useTransform(
 
 
   const textColor = useTransform(maskPosition, [0, 100], ["#FFFFFF", "#000000"]);
+//   const textColor = useTransform(maskPosition, [0, 100], ["#FFFFFF", "#000000"]);
 
   return (
     <section
       ref={sectionRef}
-      className="relative h-[80vh] w-full overflow-hidden"
+      className="relative h-[90vh] w-full overflow-hidden hover:cursor-e-resize"
       onMouseMove={handleMouseMove}
       onTouchMove={handleTouchMove}
     >
@@ -57,18 +58,30 @@ const maskClipPath = useTransform(
       />
 
       {/* Text */}
-      <motion.p
-        className="absolute top-12 text-center text-lg z-30 w-full px-4"
-        style={{ color: textColor }}
-      >
-        {text}
-      </motion.p>
+        <motion.div
+            className="
+                absolute inset-0 
+                flex top-12 justify-center 
+                pointer-events-none z-30
+            "
+            >
+            <motion.p
+                className="
+                text-center text-lg font-medium 
+                w-sm max-w-full px-4
+                "
+                style={{ color: textColor }}
+            >
+                {text}
+            </motion.p>
+        </motion.div>
+
 
       {/* Canister Image */}
       
 
       {/* Buttons */}
-      <div className="flex flex-col mt-4 absolute bottom-10 left-1/2 -translate-x-1/2 z-30 pointer-events-auto">
+      <div className="flex flex-col mt-4 absolute bottom-10 left-1/2 -translate-x-1/2 z-30 pointer-events-auto p-2 border border-black rounded">
         <button className="bg-white/90 text-black py-2 px-4 mb-2 rounded shadow">
           Shop Matcha
         </button>

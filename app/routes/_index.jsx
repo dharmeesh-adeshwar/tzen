@@ -11,12 +11,13 @@ import Principles from '~/components/Principles';
 import FooterHeader from '~/components/FooterHeader';
 import Footer2 from '~/components/Footer2';
 import Shop from '~/components/Shop';
+import Footer from '~/components/Footer2';
 
 /**
  * @type {Route.MetaFunction}
  */
 export const meta = () => {
-  return [{title: 'Hydrogen | Home'}];
+  return [{title: 'Hydrogen | Home'}];
 };
 
 /**
@@ -25,46 +26,46 @@ export const meta = () => {
 
 
 export async function loader({ context }) {
-  const [
-    { collections },
-    heroData,
-    aboutData,
-    recommendedProducts,
-    middleData,
-    productShowcaseData,
-    featuredProductData,
-    principlesData,
-    footerHeaderData,
-    footerData,
-    shopData
-  ] = await Promise.all([
-    context.storefront.query(FEATURED_COLLECTION_QUERY),
-    context.storefront.query(HERO_QUERY),
-    context.storefront.query(ABOUT_QUERY),
-    context.storefront.query(RECOMMENDED_PRODUCTS_QUERY).catch(() => null),
-    context.storefront.query(MIDDLE_QUERY),
-    context.storefront.query(PRODUCT_SHOWCASE_QUERY), // <-- added this
-    context.storefront.query(FEATURED_PRODUCT_QUERY),
-    context.storefront.query(PRINCIPLES_QUERY),
-    context.storefront.query(FOOTERHEADER_QUERY),
-    context.storefront.query(FOOTER_QUERY),
-    context.storefront.query(SHOP_QUERY)
-  ]);
+  const [
+    { collections },
+    heroData,
+    aboutData,
+    recommendedProducts,
+    middleData,
+    productShowcaseData,
+    featuredProductData,
+    principlesData,
+    footerHeaderData,
+    footerData,
+    shopData
+  ] = await Promise.all([
+    context.storefront.query(FEATURED_COLLECTION_QUERY),
+    context.storefront.query(HERO_QUERY),
+    context.storefront.query(ABOUT_QUERY),
+    context.storefront.query(RECOMMENDED_PRODUCTS_QUERY).catch(() => null),
+    context.storefront.query(MIDDLE_QUERY),
+    context.storefront.query(PRODUCT_SHOWCASE_QUERY), // <-- added this
+    context.storefront.query(FEATURED_PRODUCT_QUERY),
+    context.storefront.query(PRINCIPLES_QUERY),
+    context.storefront.query(FOOTERHEADER_QUERY),
+    context.storefront.query(FOOTER_QUERY),
+    context.storefront.query(SHOP_QUERY)
+  ]);
 
-  return {
-    featuredCollection: collections.nodes[0],
-    recommendedProducts,
-    heroPage: heroData?.page || null,
-    aboutPage: aboutData?.page || null,
-    middlePage: middleData?.page || null,
-    productShowcasePage: productShowcaseData?.page || null,
-    featuredProductPage: featuredProductData?.page || null,
-    principlesPage: principlesData?.page || null,
-    footerHeaderPage: footerHeaderData?.page || null,
-    footerPage: footerData?.page || null,
-    shopPage: shopData?.page || null
+  return {
+    featuredCollection: collections.nodes[0],
+    recommendedProducts,
+    heroPage: heroData?.page || null,
+    aboutPage: aboutData?.page || null,
+    middlePage: middleData?.page || null,
+    productShowcasePage: productShowcaseData?.page || null,
+    featuredProductPage: featuredProductData?.page || null,
+    principlesPage: principlesData?.page || null,
+    footerHeaderPage: footerHeaderData?.page || null,
+    footerPage: footerData?.shop || null, 
+    shopPage: shopData?.page || null
 
-  };
+  };
 }
 
 
@@ -74,14 +75,14 @@ export async function loader({ context }) {
  * @param {Route.LoaderArgs}
  */
 async function loadCriticalData({context}) {
-  const [{collections}] = await Promise.all([
-    context.storefront.query(FEATURED_COLLECTION_QUERY),
-    // Add other queries here, so that they are loaded in parallel
-  ]);
+  const [{collections}] = await Promise.all([
+    context.storefront.query(FEATURED_COLLECTION_QUERY),
+    // Add other queries here, so that they are loaded in parallel
+  ]);
 
-  return {
-    featuredCollection: collections.nodes[0],
-  };
+  return {
+    featuredCollection: collections.nodes[0],
+  };
 }
 
 /**
@@ -91,403 +92,394 @@ async function loadCriticalData({context}) {
  * @param {Route.LoaderArgs}
  */
 function loadDeferredData({context}) {
-  const recommendedProducts = context.storefront
-    .query(RECOMMENDED_PRODUCTS_QUERY)
-    .catch((error) => {
-      // Log query errors, but don't throw them so the page can still render
-      console.error(error);
-      return null;
-    });
+  const recommendedProducts = context.storefront
+    .query(RECOMMENDED_PRODUCTS_QUERY)
+    .catch((error) => {
+      // Log query errors, but don't throw them so the page can still render
+      console.error(error);
+      return null;
+    });
 
-  return {
-    recommendedProducts,
-  };
+  return {
+    recommendedProducts,
+  };
 }
 
 export default function Homepage() {
-  /** @type {LoaderReturnData} */
-  const data = useLoaderData();
-  return (
-    <div className="home">
-      <Hero page={data.heroPage} />
-      <About page={data.aboutPage}/>
-      <MiddleVideo page={data.middlePage} />
-      <ProductShowcase page={data.productShowcasePage} />
-      <FeaturedProduct page={data.featuredProductPage} />
-      <Principles page={data.principlesPage} />
-      <FooterHeader page={data.footerHeaderPage} />
-      <Shop page={data.shopPage} />
-      <Footer2 page={data.footerPage} />
-      <FeaturedCollection collection={data.featuredCollection} />
-      <RecommendedProducts products={data.recommendedProducts} />
-    </div>
-  );
+  /** @type {LoaderReturnData} */
+  const data = useLoaderData();
+  return (
+    <div className="home">
+      <Hero page={data.heroPage} />
+      <About page={data.aboutPage}/>
+      <MiddleVideo page={data.middlePage} />
+      <ProductShowcase page={data.productShowcasePage} />
+      <FeaturedProduct page={data.featuredProductPage} />
+      <Principles page={data.principlesPage} />
+      <FooterHeader page={data.footerHeaderPage} />
+      <Shop page={data.shopPage} />
+      <Footer page={data.footerPage} />
+{/*       <Footer2 page={data.footerPage} /> */}
+      {/* <FeaturedCollection collection={data.featuredCollection} />
+      <RecommendedProducts products={data.recommendedProducts} /> */}
+    </div>
+  );
 }
 
 /**
  * @param {{
- *   collection: FeaturedCollectionFragment;
+ *   collection: FeaturedCollectionFragment;
  * }}
  */
 function FeaturedCollection({collection}) {
-  if (!collection) return null;
-  const image = collection?.image;
-  return (
-    <Link
-      className="featured-collection"
-      to={`/collections/${collection.handle}`}
-    >
-      {image && (
-        <div className="featured-collection-image">
-          <Image data={image} sizes="100vw" />
-        </div>
-      )}
-      <h1>{collection.title}</h1>
-    </Link>
-  );
+  if (!collection) return null;
+  const image = collection?.image;
+  return (
+    <Link
+      className="featured-collection"
+      to={`/collections/${collection.handle}`}
+    >
+      {image && (
+        <div className="featured-collection-image">
+          <Image data={image} sizes="100vw" />
+        </div>
+      )}
+      <h1>{collection.title}</h1>
+    </Link>
+  );
 }
 
 /**
  * @param {{
- *   products: Promise<RecommendedProductsQuery | null>;
+ *   products: Promise<RecommendedProductsQuery | null>;
  * }}
  */
 function RecommendedProducts({products}) {
-  return (
-    <div className="recommended-products">
-      <h2>Recommended Products</h2>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Await resolve={products}>
-          {(response) => (
-            <div className="recommended-products-grid">
-              {response
-                ? response.products.nodes.map((product) => (
-                    <ProductItem key={product.id} product={product} />
-                  ))
-                : null}
-            </div>
-          )}
-        </Await>
-      </Suspense>
-      <br />
-    </div>
-  );
+  return (
+    <div className="recommended-products">
+      <h2>Recommended Products</h2>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Await resolve={products}>
+          {(response) => (
+            <div className="recommended-products-grid">
+              {response
+                ? response.products.nodes.map((product) => (
+                    <ProductItem key={product.id} product={product} />
+                  ))
+                : null}
+            </div>
+          )}
+        </Await>
+      </Suspense>
+      <br />
+    </div>
+  );
 }
 
 const FEATURED_COLLECTION_QUERY = `#graphql
-  fragment FeaturedCollection on Collection {
-    id
-    title
-    image {
-      id
-      url
-      altText
-      width
-      height
-    }
-    handle
-  }
-  query FeaturedCollection($country: CountryCode, $language: LanguageCode)
-    @inContext(country: $country, language: $language) {
-    collections(first: 1, sortKey: UPDATED_AT, reverse: true) {
-      nodes {
-        ...FeaturedCollection
-      }
-    }
-  }
+  fragment FeaturedCollection on Collection {
+    id
+    title
+    image {
+      id
+      url
+      altText
+      width
+      height
+    }
+    handle
+  }
+  query FeaturedCollection($country: CountryCode, $language: LanguageCode)
+    @inContext(country: $country, language: $language) {
+    collections(first: 1, sortKey: UPDATED_AT, reverse: true) {
+      nodes {
+        ...FeaturedCollection
+      }
+    }
+  }
 `;
 
 const RECOMMENDED_PRODUCTS_QUERY = `#graphql
-  fragment RecommendedProduct on Product {
-    id
-    title
-    handle
-    priceRange {
-      minVariantPrice {
-        amount
-        currencyCode
-      }
-    }
-    featuredImage {
-      id
-      url
-      altText
-      width
-      height
-    }
-  }
-  query RecommendedProducts ($country: CountryCode, $language: LanguageCode)
-    @inContext(country: $country, language: $language) {
-    products(first: 4, sortKey: UPDATED_AT, reverse: true) {
-      nodes {
-        ...RecommendedProduct
-      }
-    }
-  }
+  fragment RecommendedProduct on Product {
+    id
+    title
+    handle
+    priceRange {
+      minVariantPrice {
+        amount
+        currencyCode
+      }
+    }
+    featuredImage {
+      id
+      url
+      altText
+      width
+      height
+    }
+  }
+  query RecommendedProducts ($country: CountryCode, $language: LanguageCode)
+    @inContext(country: $country, language: $language) {
+    products(first: 4, sortKey: UPDATED_AT, reverse: true) {
+      nodes {
+        ...RecommendedProduct
+      }
+    }
+  }
 `;
 const HERO_QUERY = `#graphql
-  query HeroSection {
-    page(handle: "home") {
-      id
-      title
-      metafields(identifiers: [
-        {namespace: "hero", key: "image"},
-        {namespace: "hero", key: "logo"},
-        {namespace: "hero", key: "subheadingleft"},
-        {namespace: "hero", key: "subheadingright"},
-        {namespace: "hero", key: "subheadingright2"},
-        {namespace: "hero", key: "subheadingleft2"}
-      ]) {
-        key
-        value
-        type
-        reference {
-          ... on MediaImage {
-            image {
-              url
-              altText
-            }
-          }
-        }
-      }
-    }
-  }
+  query HeroSection {
+    page(handle: "home") {
+      id
+      title
+      metafields(identifiers: [
+        {namespace: "hero", key: "image"},
+        {namespace: "hero", key: "logo"},
+        {namespace: "hero", key: "subheadingleft"},
+        {namespace: "hero", key: "subheadingright"},
+        {namespace: "hero", key: "subheadingright2"},
+        {namespace: "hero", key: "subheadingleft2"}
+      ]) {
+        key
+        value
+        type
+        reference {
+          ... on MediaImage {
+            image {
+              url
+              altText
+            }
+          }
+        }
+      }
+    }
+  }
 `;
 const ABOUT_QUERY = `#graphql
-  query AboutSection {
-    page(handle: "home") {
-      id
-      title
-      metafields(identifiers: [
-        {namespace: "about", key: "heading"},
-        {namespace: "about", key: "desc"},
-        {namespace: "about", key: "logo"},
-        {namespace: "about", key: "bgcolor"},
-        {namespace: "about", key: "bgimage"}
-      ]) {
-        key
-        value
-        type
-        reference {
-          ... on MediaImage {
-            image {
-              url
-              altText
-            }
-          }
-        }
-      }
-    }
-  }
+  query AboutSection {
+    page(handle: "home") {
+      id
+      title
+      metafields(identifiers: [
+        {namespace: "about", key: "heading"},
+        {namespace: "about", key: "desc"},
+        {namespace: "about", key: "logo"},
+        {namespace: "about", key: "bgcolor"},
+        {namespace: "about", key: "bgimage"}
+      ]) {
+        key
+        value
+        type
+        reference {
+          ... on MediaImage {
+            image {
+              url
+              altText
+            }
+          }
+        }
+      }
+    }
+  }
 `;
 const MIDDLE_QUERY = `#graphql
-  query MiddleSection {
-    page(handle: "home") {
-      id
-      title
-      metafields(identifiers: [
-        {namespace: "mid", key: "bgvideo"}
-      ]) {
-        key
-        type
-        reference {
-          ... on Video {
-            sources {
-              url
-              mimeType
-              format
-              height
-              width
-            }
-            previewImage {
-              url
-            }
-          }
-        }
-      }
-    }
-  }
+  query MiddleSection {
+    page(handle: "home") {
+      id
+      title
+      metafields(identifiers: [
+        {namespace: "mid", key: "bgvideo"}
+      ]) {
+        key
+        type
+        reference {
+          ... on Video {
+            sources {
+              url
+              mimeType
+              format
+              height
+              width
+            }
+            previewImage {
+              url
+            }
+          }
+        }
+      }
+    }
+  }
 `;
 const PRODUCT_SHOWCASE_QUERY = `#graphql
-  query ProductShowcase {
-    page(handle: "home") {
-      id
-      metafields(identifiers: [
-        { namespace: "custom", key: "day_product" },
-        { namespace: "custom", key: "night_product" },
-        { namespace: "custom", key: "day_product_bg" },
-        { namespace: "custom", key: "night_product_bg" },
-        { namespace: "custom", key: "day_other_bg" },
-        { namespace: "custom", key: "night_other_bg" }
-      ]) {
-        key
-        reference {
-          ... on Product {
-            id
-            handle
-            title
-            descriptionHtml
-            images(first: 1) {
-              nodes {
-                url
-                altText
-                width
-                height
-              }
-            }
-          }
-          ... on MediaImage {
-            image {
-              url
-              altText
-              width
-              height
-            }
-          }
-        }
-      }
-    }
-  }
+  query ProductShowcase {
+    page(handle: "home") {
+      id
+      metafields(identifiers: [
+        { namespace: "custom", key: "day_product" },
+        { namespace: "custom", key: "night_product" },
+        { namespace: "custom", key: "day_product_bg" },
+        { namespace: "custom", key: "night_product_bg" },
+        { namespace: "custom", key: "day_other_bg" },
+        { namespace: "custom", key: "night_other_bg" }
+      ]) {
+        key
+        reference {
+          ... on Product {
+            id
+            handle
+            title
+            descriptionHtml
+            images(first: 1) {
+              nodes {
+                url
+                altText
+                width
+                height
+              }
+            }
+          }
+          ... on MediaImage {
+            image {
+              url
+              altText
+              width
+              height
+            }
+          }
+        }
+      }
+    }
+  }
 `;
 const FEATURED_PRODUCT_QUERY = `#graphql
-  query FeaturedProduct {
-    page(handle: "home") {
-      id
-      metafields(identifiers: [
-        { namespace: "custom", key: "featured_product" },
-        { namespace: "custom", key: "featured_product_text1" },
-        { namespace: "custom", key: "featured_product_text2" },
-        { namespace: "custom", key: "featured_product_text3" }
-      ]) {
-        key
-        value
-        reference {
-          ... on MediaImage {
-            image {
-              url
-              altText
-              width
-              height
-            }
-          }
-        }
-      }
-    }
-  }
+  query FeaturedProduct {
+    page(handle: "home") {
+      id
+      metafields(identifiers: [
+        { namespace: "custom", key: "featured_product" },
+        { namespace: "custom", key: "featured_product_text1" },
+        { namespace: "custom", key: "featured_product_text2" },
+        { namespace: "custom", key: "featured_product_text3" }
+      ]) {
+        key
+        value
+        reference {
+          ... on MediaImage {
+            image {
+              url
+              altText
+              width
+              height
+            }
+          }
+        }
+      }
+    }
+  }
 `;
 const PRINCIPLES_QUERY = `#graphql
-  query Principles {
-    page(handle: "home") {
-      id
-      metafields(identifiers: [
-        { namespace: "principal", key: "heading_left" },
-        { namespace: "principal", key: "desc_left" },
-        { namespace: "principal", key: "image_left" },
-        { namespace: "principal", key: "heading_center" },
-        { namespace: "principal", key: "desc_center" },
-        { namespace: "principal", key: "image_center" },
-        { namespace: "principal", key: "heading_right" },
-        { namespace: "principal", key: "desc_right" },
-        { namespace: "principal", key: "image_right" },
-        { namespace: "principal", key: "bgcolor" }
-      ]) {
-        key
-        value
-        reference {
-          ... on MediaImage {
-            image {
-              url
-              altText
-            }
-          }
-        }
-      }
-    }
-  }
+  query Principles {
+    page(handle: "home") {
+      id
+      metafields(identifiers: [
+        { namespace: "principal", key: "heading_left" },
+        { namespace: "principal", key: "desc_left" },
+        { namespace: "principal", key: "image_left" },
+        { namespace: "principal", key: "heading_center" },
+        { namespace: "principal", key: "desc_center" },
+        { namespace: "principal", key: "image_center" },
+        { namespace: "principal", key: "heading_right" },
+        { namespace: "principal", key: "desc_right" },
+        { namespace: "principal", key: "image_right" },
+        { namespace: "principal", key: "bgcolor" }
+      ]) {
+        key
+        value
+        reference {
+          ... on MediaImage {
+            image {
+              url
+              altText
+            }
+          }
+        }
+      }
+    }
+  }
 `;
 const FOOTERHEADER_QUERY = `#graphql
-  query FOOTERHEADER {
-    page(handle: "home") {
-      id
-      metafields(identifiers: [
-        { namespace: "custom", key: "footer_header" },
-        { namespace: "custom", key: "footer_header_bg" },
-      ]) {
-        key
-        value
-        reference {
-          ... on MediaImage {
-            image {
-              url
-              altText
-            }
-          }
-        }
-      }
-    }
-  }
+  query FOOTERHEADER {
+    page(handle: "home") {
+      id
+      metafields(identifiers: [
+        { namespace: "custom", key: "footer_header_text" },
+        { namespace: "custom", key: "footer_header_bg" },
+      ]) {
+        key
+        value
+        reference {
+          ... on MediaImage {
+            image {
+              url
+              altText
+            }
+          }
+        }
+      }
+    }
+  }
 `;
 const FOOTER_QUERY = `#graphql
-  query Footer {
-    page(handle: "home") {
-      id
-      metafields(identifiers: [
-        { namespace: "footer", key: "headline" },
-        { namespace: "footer", key: "copyright" },
-        { namespace: "footer", key: "logo" },
-        { namespace: "footer", key: "link" },
-        { namespace: "footer", key: "bg" }
-      ]) {
-        key
-        value
-
-        reference {
-          ... on MediaImage {
-            image {
-              url
-              altText
-              width
-              height
-            }
-          }
-        }
-
-        references(first: 20) {
-          nodes {
-            ... on Page {
-              id
-              title
-              handle
-            }
-          }
-        }
-      }
-    }
-  }
+  query FooterQuery {
+    shop {
+      metafields(identifiers: [
+        { namespace: "footer", key: "headline" },
+        { namespace: "footer", key: "copyright" },
+        { namespace: "footer", key: "bg" },
+        { namespace: "footer", key: "logo" },
+        { namespace: "footer", key: "links" }
+      ]) {
+        key
+        value
+        reference {
+          __typename
+          ... on MediaImage {
+            image { url }
+          }
+        }
+        references(first: 25) { 
+          nodes {
+            __typename
+            ... on Page { handle title }
+          }
+        }
+      }
+    }
+  }
 `;
 const SHOP_QUERY = `#graphql
-  query Shop {
-    page(handle: "home") {
-      metafields(identifiers: [
-        { namespace: "shop", key: "light" },
-        { namespace: "shop", key: "dark" },
-        { namespace: "shop", key: "text" }
-      ]) {
-        key
-        value
-        reference {
-          ... on MediaImage {
-            image {
-              url
-              altText
-              width
-              height
-            }
-          }
-        }
-      }
-    }
-  }
+  query Shop {
+    page(handle: "home") {
+      metafields(identifiers: [
+        { namespace: "shop", key: "light" },
+        { namespace: "shop", key: "dark" },
+        { namespace: "shop", key: "text" }
+      ]) {
+        key
+        value
+        reference {
+          ... on MediaImage {
+            image {
+              url
+              altText
+              width
+              height
+            }
+          }
+        }
+      }
+    }
+  }
 `;
 
 
@@ -496,4 +488,3 @@ const SHOP_QUERY = `#graphql
 /** @typedef {import('storefrontapi.generated').FeaturedCollectionFragment} FeaturedCollectionFragment */
 /** @typedef {import('storefrontapi.generated').RecommendedProductsQuery} RecommendedProductsQuery */
 /** @typedef {import('@shopify/remix-oxygen').SerializeFrom<typeof loader>} LoaderReturnData */
-
