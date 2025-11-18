@@ -1,7 +1,18 @@
-import React from "react";
+import React,{useEffect} from "react";
 import { Image } from "@shopify/hydrogen";
-
+import AOS from "aos";
+import "aos/dist/aos.css";
 export default function Hero({ page }) {
+useEffect(() => {
+  AOS.init({
+    duration: 1000,
+    once: false,
+    startEvent: "DOMContentLoaded", // ensure it fires on load
+  });
+
+  AOS.refreshHard();
+}, []);
+
   if (!page) return null;
 
   // Helper to find metafields
@@ -25,7 +36,7 @@ export default function Hero({ page }) {
   });
 
   return (
-    <section className="relative w-full h-screen overflow-hidden flex items-center justify-center">
+    <section className="sticky relative w-full h-screen overflow-hidden flex items-center justify-center z-0">
       {/* Background image */}
       {heroImage && (
         <Image
@@ -38,7 +49,7 @@ export default function Hero({ page }) {
       <div className="absolute inset-0 bg-black/20"></div>
 
       {/* Center logo */}
-      <div className="relative flex flex-col items-center justify-center text-white text-center px-6">
+      <div className="relative flex flex-col items-center justify-center text-white text-center px-6" data-aos="zoom-in">
         {heroLogo && (
           <Image
             data={{ url: heroLogo, altText: "Hero logo" }}
@@ -51,9 +62,9 @@ export default function Hero({ page }) {
       <div className="absolute bottom-10 left-0 right-0 flex justify-between items-end px-8 text-white z-10">
         {/* Left text group */}
         {(leftText || leftText2) && (
-          <div className="flex flex-col items-start max-w-[45%]">
+          <div className="flex flex-col items-start max-w-[45%] fade-right" data-aos="">
             {leftText && (
-              <h2 className="text-lg md:text-2xl font-light text-left">
+              <h2 className="text-lg md:text-2xl font-light text-left ">
                 {leftText}
               </h2>
             )}
@@ -67,7 +78,7 @@ export default function Hero({ page }) {
 
         {/* Right text group */}
         {(rightText || rightText2) && (
-          <div className="flex flex-col items-end max-w-[45%] text-right">
+          <div className="flex flex-col items-end max-w-[45%] text-right fade-left">
             {rightText && (
               <h2 className="text-lg md:text-2xl font-light">{rightText}</h2>
             )}

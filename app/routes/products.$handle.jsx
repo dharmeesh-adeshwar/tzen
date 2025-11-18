@@ -7,13 +7,15 @@ import {
   getAdjacentAndFirstAvailableVariants,
   useSelectedOptionInUrlParam,
 } from '@shopify/hydrogen';
-
+import AOS from "aos";
+import "aos/dist/aos.css";
 import {ProductPrice} from '~/components/ProductPrice';
 import {ProductImage} from '~/components/ProductImage';
 import {ProductForm} from '~/components/ProductForm';
 import {redirectIfHandleIsLocalized} from '~/lib/redirect';
 import ProductShowcase from '~/components/ProductShowcase';
 import Footer from '~/components/Footer2';
+import { useEffect } from 'react';
 /**
  * @type {Route.MetaFunction}
  */
@@ -67,14 +69,14 @@ async function loadCriticalData({context, params, request}) {
     }),
     storefront.query(HOMEPAGE_METAFIELDS_QUERY),
     // 🟢 New: Fetch the global shop data for the footer
-    storefront.query(FOOTER_QUERY), 
+    storefront.query(FOOTER_QUERY),
   ]);
 
   if (!product?.id) throw new Response(null, {status: 404});
 
   redirectIfHandleIsLocalized(request, {handle, data: product});
   // 🟢 New: Return the shop data
-  return {product, homepage, shop}; 
+  return {product, homepage, shop};
 }
 function loadDeferredData() {
   return {};
@@ -208,94 +210,154 @@ export default function Product() {
 //   );
 // }
 function HeroSection({product, selectedVariant}) {
-  const headerLeft1 = product.metafield_header_text_left_1?.value;
-  const headerLeft2 = product.metafield_header_text_left_2?.value;
-  const headerRight1 = product.metafield_header_text_right_1?.value;
-  const headerRight2 = product.metafield_header_text_right_2?.value;
+  useEffect(() => {
+    AOS.init({
+      duration: 1000,
+      once: false,
+      startEvent: "DOMContentLoaded", // ensure it fires on load
+    });
+  
+    AOS.refreshHard();
+  }, []);
+  const headerLeft1 = product.metafield_header_text_left_1?.value;
+  const headerLeft2 = product.metafield_header_text_left_2?.value;
+  const headerRight1 = product.metafield_header_text_right_1?.value;
+  const headerRight2 = product.metafield_header_text_right_2?.value;
 
-  const heroImage = product.metafield_hero_image?.reference?.image;
-  const headerLogo = product.metafield_header_logo?.reference?.image;
+  const heroImage = product.metafield_hero_image?.reference?.image;
+  const headerLogo = product.metafield_header_logo?.reference?.image;
 
-  // Assuming selectedVariant has a price property like selectedVariant.price
-  // and selectedVariant.price.currencyCode, selectedVariant.price.amount
-  const priceCurrency = selectedVariant?.price?.currencyCode === 'JPY' ? '¥' : '$';
-  const priceAmount = selectedVariant?.price?.amount ?? '2,800'; // Defaulting to 2,800 as seen in the image
+  const priceCurrency =
+    selectedVariant?.price?.currencyCode === 'JPY' ? '¥' : '$';
+  const priceAmount = selectedVariant?.price?.amount ?? '2,800';
 
-  return (
-    <div className="relative w-full h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image */}
-      {heroImage && (
-        <img
-          src={heroImage.url}
-          alt={heroImage?.altText ?? ''}
-          className="absolute inset-0 w-full h-full object-cover opacity-90"
-        />
-      )}
+  return (
+    <div className="relative w-full h-screen flex items-center justify-center overflow-hidden">
+      {/* Background Image */}
+      {heroImage && (
+        <img
+          src={heroImage.url}
+          alt={heroImage?.altText ?? ''}
+          className="absolute inset-0 w-full h-full object-cover opacity-90"
+        />
+      )}
 
-      {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-black opacity-30" />
+      {/* Dark Overlay */}
+      <div className="absolute inset-0 bg-black opacity-30" />
 
-      {/* Header Strip */}
-      <div className="absolute top-6 w-full flex items-center justify-between px-10 text-white drop-shadow-lg">
-        {/* Left Header */}
-        <div className="w-xs">
-          <div className="text-lg font-semibold tracking-wide">
-            {headerLeft1}
-          </div>
-          <div className="text-sm opacity-70">{headerLeft2}</div>
-        </div>
+      {/* Header Strip */}
+      <div className="absolute top-6 w-full flex items-center justify-between px-10 text-white drop-shadow-lg">
+        {/* Left Header */}
+        <div className="w-xs fade-right">
+          <div className="text-lg font-semibold tracking-wide">
+            {headerLeft1}
+          </div>
+          <div className="text-sm opacity-70">{headerLeft2}</div>
+        </div>
 
-        {/* Logo */}
-        {headerLogo && (
-          <img
-            src={headerLogo.url}
-            alt={headerLogo?.altText ?? ''}
-            className="w-40 drop-shadow-xl"
-          />
-        )}
+        {/* Logo */}
+        {headerLogo && (
+          <img
+            src={headerLogo.url}
+            alt={headerLogo?.altText ?? ''}
+            className="w-40 drop-shadow-xl"
+             data-aos="zoom-in"
+          />
+        )}
 
-        {/* Right Header */}
-        <div className="text-right w-xs">
-          <div className="text-lg font-semibold tracking-wide">
-            {headerRight1}
-          </div>
-          <div className="text-sm opacity-70">{headerRight2}</div>
-        </div>
-      </div>
+        {/* Right Header */}
+        <div className="text-right w-xs fade-left">
+          <div className="text-lg font-semibold tracking-wide ">
+            {headerRight1}
+          </div>
+          <div className="text-sm opacity-70">{headerRight2}</div>
+        </div>
+      </div>
 
-      {/* Centered Product and Footer Elements */}
-      <div className="relative z-10 flex flex-col items-center justify-center">
-        
-        {/* Product Image (Assuming this is the main image in the middle) */}
-        {product.featuredImage && (
-          <img
-            src={product.featuredImage.url}
-            alt={product.featuredImage.altText ?? product.title}
-            className="w-64 h-auto drop-shadow-2xl" // Adjust size as needed
-          />
-        )}
+      {/* Center Product Image */}
+      <div className="relative z-10 flex flex-col items-center justify-center">
+        {product.featuredImage && (
+          <img
+            src={product.featuredImage.url}
+            alt={product.featuredImage.altText ?? product.title}
+            className="w-64 h-auto drop-shadow-2xl"
+          />
+        )}
+      </div>
 
-        {/* Price and Add to Cart Container (Footer-like elements) */}
-        <div className="flex flex-col items-center mt-4">
-          {/* Price Container */}
-          <div className="bg-black/50 p-1 px-4 rounded-md shadow-lg flex items-center justify-center space-x-2 text-sm font-medium border border-gray-300">
-{/*         <span className="text-gray-600">{priceCurrency}</span>
-            <span className="text-gray-900">{priceAmount}</span> */}
-            
-          </div>
+      {/* BOTTOM FIXED PRICE + CART (bottom-6 of h-screen) */}
+      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center">
+        {/* Price */}
+        <div className="bg-white/40 backdrop-blur-md p-2 px-2 rounded-md shadow-lg flex flex-col items-center border-none space-y-2">
+          {/* Currency Switcher */}
+          <div className="flex items-center space-x-1 text-black text-sm font-semibold">
+            {/* Dollar */}
+            <span
+              className={`px-2 py-1 rounded-md ${
+                priceCurrency === '$' ? 'bg-black text-white' : ''
+              }`}
+            >
+              $
+            </span>
 
-          {/* Add to Cart Button */}
-          <button
-            // You'll need to add an onClick handler here for the cart logic
-            className="mt-2 bg-white/90 p-2 px-6 rounded-md shadow-lg text-sm font-medium text-gray-800 border border-gray-300 hover:bg-gray-100 transition duration-150"
-          >
-            Add to Cart / カートに追加
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+            {/* Rupee */}
+            <span
+              className={`px-2 py-1 rounded-md ${
+                priceCurrency === '₹' ? 'bg-black text-white' : ''
+              }`}
+            >
+              ₹
+            </span>
+
+            {/* Yen */}
+            <span
+              className={`px-2 py-1 rounded-md ${
+                priceCurrency === '¥' ? 'bg-black text-white' : ''
+              }`}
+            >
+              ¥
+            </span>
+          </div>
+
+          {/* Price Box */}
+          <div className="bg-white/20 px-4 py-1 rounded-md text-gray-900 text-sm font-semibold">
+            {priceCurrency}
+            {priceAmount}
+          </div>
+        </div>
+
+        {/* Add to Cart */}
+        {/* <button
+          className="
+            bg-[#EEF6C9]/90
+            text-gray-900
+            px-6 py-2
+            rounded-t-xl rounded-b-2xl
+            shadow-[0_4px_10px_rgba(0,0,0,0.25)]
+            border border-gray-400/60
+            text-sm font-medium
+            backdrop-blur-md
+            hover:bg-[#f4fbd8]
+            transition mt-4
+          "
+        >
+          Add to Cart<br />カートに追加
+        </button> */}
+        <div className="flex items-center justify-center overflow-hidden">
+          <div className="border-t border-black w-4xl" />
+          <div className="p-2 rounded-br-2xl rounded-bl-2xl rounded-tl-sm rounded-tr-sm border mt-4" data-aos="fade-up">
+            <button className="bg-transparent px-8 py-3 hover:bg-[#d2e3b3]/80 text-sm transition rounded-br-2xl rounded-bl-2xl rounded-tl-sm rounded-tr-sm hover:cursor-pointer">
+              <p>Add to Cart</p>
+              <p>カートに追加</p>
+            </button>
+          </div>
+          <div className="border-t border-black w-4xl" />
+        </div>
+      </div>
+    </div>
+  );
 }
+
 /* -------------------------------------------------------------------------- */
 /* 🟣 PRODUCT DESCRIPTION SECTION (50vh)                                      */
 /* -------------------------------------------------------------------------- */
@@ -316,7 +378,7 @@ function ProductDescriptionSection({product}) {
       <div className="max-w-full px-6 mx-auto flex flex-col justify-between h-full w-full">
         {/* Top Row: Heading + Line + Logo */}
         <div className="w-full">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4"  data-aos="fade-left">
             {heading && (
               <p className="text-xs md:text-sm tracking-widest uppercase text-gray-700 pb-1 font-sans">
                 {heading}
@@ -338,7 +400,7 @@ function ProductDescriptionSection({product}) {
         </div>
 
         {/* Description at bottom */}
-        <div className="max-w-3xl text-left ">
+        <div className="max-w-3xl text-left " data-aos="fade-left">
           {(desc || desc2) && (
             <>
               {desc && (
@@ -388,7 +450,9 @@ function PreparationSection({product}) {
               className="w-28 h-28 object-contain opacity-80 mb-12"
             />
           )}
-          <p className="text-sm text-gray-700 max-w-xs mb-12 font-medium">{step1Desc}</p>
+          <p className="text-sm text-gray-700 max-w-xs mb-12 font-medium">
+            {step1Desc}
+          </p>
         </div>
 
         {/* STEP 2 */}
@@ -401,7 +465,9 @@ function PreparationSection({product}) {
               className="w-28 h-28 object-contain opacity-80 mb-12"
             />
           )}
-          <p className="text-sm text-gray-700 max-w-xs mb-12 font-medium">{step2Desc}</p>
+          <p className="text-sm text-gray-700 max-w-xs mb-12 font-medium">
+            {step2Desc}
+          </p>
         </div>
 
         {/* STEP 3 */}
@@ -414,7 +480,9 @@ function PreparationSection({product}) {
               className="w-28 h-28 object-contain opacity-80 mb-12"
             />
           )}
-          <p className="text-sm text-gray-700 max-w-xs mb-12 font-medium">{step3Desc}</p>
+          <p className="text-sm text-gray-700 max-w-xs mb-12 font-medium">
+            {step3Desc}
+          </p>
         </div>
       </div>
     </section>
@@ -425,14 +493,16 @@ function VideoBGSection({product}) {
   const video = product.metafield_bg_video?.reference;
 
   if (!video?.sources) {
-    console.log("Video not ready", video);
+    console.log('Video not ready', video);
     return null;
   }
 
-  const mp4Sources = video.sources.filter(s => s.mimeType === "video/mp4");
+  const mp4Sources = video.sources.filter((s) => s.mimeType === 'video/mp4');
 
   // fallback for safari
-  const hlsSource = video.sources.find(s => s.mimeType === "application/x-mpegURL");
+  const hlsSource = video.sources.find(
+    (s) => s.mimeType === 'application/x-mpegURL',
+  );
 
   return (
     <section className="relative w-full h-screen overflow-hidden">
@@ -455,11 +525,9 @@ function VideoBGSection({product}) {
         )}
       </video>
       <div className="absolute inset-0 bg-black/20"></div>
-      
     </section>
   );
 }
-
 
 /* -------------------------------------------------------------------------- */
 /* 🟣 GRAPHQL PRODUCT QUERY WITH METAFIELDS                                   */

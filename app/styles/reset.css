@@ -56,11 +56,11 @@ a:hover {
   cursor: pointer;
 }
 
-hr {
+/* hr {
   border-bottom: none;
   border-top: 1px solid #000;
   margin: 0;
-}
+} */
 
 pre {
   white-space: pre-wrap;

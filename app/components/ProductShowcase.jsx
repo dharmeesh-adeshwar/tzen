@@ -1,7 +1,8 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {Image} from '@shopify/hydrogen';
 import {Link} from 'react-router';
-
+import AOS from "aos";
+import "aos/dist/aos.css";
 // Small reusable toggle that visually matches the provided photo
 function DayNightToggle({isDay, setIsDay}) {
   return (
@@ -79,6 +80,15 @@ function DayNightToggle({isDay, setIsDay}) {
 }
 
 export default function ProductShowcase({page}) {
+  useEffect(() => {
+    AOS.init({
+      duration: 500,
+      once: false,
+      startEvent: "DOMContentLoaded", // ensure it fires on load
+    });
+  
+    AOS.refreshHard();
+  }, []);
   const [isDay, setIsDay] = useState(true);
   if (!page) return null;
 
@@ -142,6 +152,7 @@ export default function ProductShowcase({page}) {
         >
           <h2
             className="text-2xl font-light uppercase tracking-wide mb-4"
+            data-aos="fade-left"
             style={{color: isDay ? '#111' : '#f3f3f3'}}
           >
             {activeProduct?.title || 'Product Title'}
@@ -155,6 +166,7 @@ export default function ProductShowcase({page}) {
 
           <div
             className="max-w-md text-sm mb-4"
+            data-aos="fade-left"
             style={{
               color: isDay ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.8)',
             }}
@@ -163,6 +175,7 @@ export default function ProductShowcase({page}) {
 
           {activeProduct && (
             <Link
+              data-aos="fade-left"
               to={`/products/${activeProduct.handle}`}
               className="
                 px-5 py-2 text-xs uppercase tracking-widest mt-4 

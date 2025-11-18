@@ -576,3 +576,51 @@ button.reset:hover:not(:has(> *)) {
   gap: 0.75rem;
   flex-wrap: wrap;
 }
+/* Fade in from left */
+@keyframes fadeRight {
+  0% {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Fade in from right */
+@keyframes fadeLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Zoom in */
+@keyframes zoomIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Animation classes */
+.zoom-in {
+  animation: zoomIn 1s ease forwards;
+}
+
+.fade-right {
+  animation: fadeRight 1s ease forwards;
+}
+
+.fade-left {
+  animation: fadeLeft 1s ease forwards;
+}

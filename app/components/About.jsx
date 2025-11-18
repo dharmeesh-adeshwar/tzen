@@ -1,8 +1,17 @@
-import React from "react";
-
+import React,{useEffect} from "react";
+import AOS from "aos";
+import "aos/dist/aos.css";
 export default function About({ page }) {
   if (!page) return null;
+useEffect(() => {
+  AOS.init({
+    duration: 500,
+    once: false,
+    startEvent: "DOMContentLoaded", // ensure it fires on load
+  });
 
+  AOS.refreshHard();
+}, []);
   const findField = (key) => page?.metafields?.find((f) => f.key === key);
 
   const abouthead =
@@ -30,7 +39,7 @@ export default function About({ page }) {
             <div className="flex items-center gap-4">
                 {/* Left: heading */}
                 {abouthead && (
-                    <p className="text-xs md:text-sm tracking-widest uppercase text-gray-700 pb-1 font-sans">
+                    <p className="text-xs md:text-sm tracking-widest uppercase text-gray-700 pb-1 font-sans" data-aos="fade-left">
                     {abouthead}
                     </p>
                 )}
@@ -53,7 +62,7 @@ export default function About({ page }) {
 
         {/* Bottom: description */}
         {aboutdesc && (
-          <div className="max-w-2xl text-left">
+          <div className="max-w-2xl text-left" data-aos="fade-left">
             <p className="text-sm md:text-base leading-relaxed text-gray-800">
               {aboutdesc}
             </p>

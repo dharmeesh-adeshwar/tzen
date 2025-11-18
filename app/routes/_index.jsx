@@ -109,7 +109,7 @@ export default function Homepage() {
   /** @type {LoaderReturnData} */
   const data = useLoaderData();
   return (
-    <div className="home">
+    <div className="home  ">
       <Hero page={data.heroPage} />
       <About page={data.aboutPage}/>
       <MiddleVideo page={data.middlePage} />
