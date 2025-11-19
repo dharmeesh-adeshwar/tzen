@@ -16,7 +16,6 @@ export default function Footer({ page }) {
     linksField?.references?.nodes
       ?.map((ref) => {
         if (!ref || !ref.title || !ref.handle) return null;
-
         return {
           title: ref.title,
           url: `/pages/${ref.handle}`,
@@ -26,25 +25,22 @@ export default function Footer({ page }) {
 
   return (
     <footer
-      className="w-full min-h-screen flex flex-col px-6 py-24 text-center"
+      className="relative w-full min-h-screen flex flex-col px-6 py-24 text-center z-80"
       style={{
         backgroundColor: bgColor || "#f9fafb",
       }}
     >
       <div className="max-w-2xl w-full mx-auto flex flex-col items-center justify-center space-y-8 flex-grow">
-        {/* Logo */}
         {logo && (
           <div className="flex justify-center mb-4">
             <img src={logo} alt="Footer Logo" className="h-24 w-auto" />
           </div>
         )}
 
-        {/* Headline */}
         {headline && (
           <p className="text-base font-medium text-black">{headline}</p>
         )}
 
-        {/* Navigation Links */}
         {links.length > 0 && (
           <nav className="flex justify-center items-center gap-8">
             {links.map((item, i) => (
@@ -64,7 +60,6 @@ export default function Footer({ page }) {
         )}
       </div>
 
-      {/* Copyright */}
       {copyright && (
         <div className="pt-8 mt-auto">
           <p className="text-xs text-gray-500 tracking-wide">{copyright}</p>

@@ -3,11 +3,10 @@ import {Image} from '@shopify/hydrogen';
 import {Link} from 'react-router';
 import AOS from "aos";
 import "aos/dist/aos.css";
-// Small reusable toggle that visually matches the provided photo
+
 function DayNightToggle({isDay, setIsDay}) {
   return (
     <div className="flex flex-col items-center gap-2 select-none">
-      {/* Top labels "AM / PM" */}
       <div className="flex items-center gap-8 text-xs font-semibold">
         <span
           className={`transition-opacity ${isDay ? 'opacity-100 text-gray-700' : 'opacity-40 text-gray-400'}`}
@@ -21,11 +20,8 @@ function DayNightToggle({isDay, setIsDay}) {
         </span>
       </div>
 
-      {/* Toggle pill */}
       <div className="relative rounded-2xl p-1 bg-white/40 backdrop-blur-md border border-white/30 shadow-sm">
-        {/* Inner pill container */}
         <div className="flex items-center gap-1 bg-transparent rounded-xl p-1">
-          {/* Left (day) button */}
           <button
             onClick={() => setIsDay(true)}
             aria-pressed={isDay}
@@ -33,7 +29,6 @@ function DayNightToggle({isDay, setIsDay}) {
               isDay ? 'bg-black/80 text-white' : 'bg-white/60 text-gray-700'
             }`}
           >
-            {/* Sun icon */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="w-5 h-5"
@@ -45,7 +40,6 @@ function DayNightToggle({isDay, setIsDay}) {
             </svg>
           </button>
 
-          {/* Right (night) button */}
           <button
             onClick={() => setIsDay(false)}
             aria-pressed={!isDay}
@@ -53,7 +47,6 @@ function DayNightToggle({isDay, setIsDay}) {
               !isDay ? 'bg-white text-gray-900' : 'bg-white/40 text-gray-400'
             }`}
           >
-            {/* Moon icon */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="w-5 h-5"
@@ -66,7 +59,6 @@ function DayNightToggle({isDay, setIsDay}) {
         </div>
       </div>
 
-      {/* Bottom labels in Japanese like the photo */}
       <div className="flex items-center gap-8 text-xs text-white">
         <span
           className={`transition-opacity ${isDay ? 'opacity-100' : 'opacity-40'}`}
@@ -84,21 +76,18 @@ export default function ProductShowcase({page}) {
     AOS.init({
       duration: 500,
       once: false,
-      startEvent: "DOMContentLoaded", // ensure it fires on load
+      startEvent: "DOMContentLoaded",
     });
-  
     AOS.refreshHard();
   }, []);
+  
   const [isDay, setIsDay] = useState(true);
   if (!page) return null;
 
   const getField = (key) => page.metafields?.find((f) => f.key === key);
 
-  // Products
   const dayProduct = getField('day_product')?.reference;
   const nightProduct = getField('night_product')?.reference;
-
-  // Backgrounds
   const dayProductBg = getField('day_product_bg')?.reference?.image?.url;
   const nightProductBg = getField('night_product_bg')?.reference?.image?.url;
   const dayOtherBg = getField('day_other_bg')?.reference?.image?.url;
@@ -107,13 +96,10 @@ export default function ProductShowcase({page}) {
   const activeProduct = isDay ? dayProduct : nightProduct;
 
   return (
-    <section className="relative w-full h-screen overflow-hidden">
-      {/* Background Split */}
+    <section className="sticky top-0 w-full h-screen overflow-hidden z-40">
       <div className="absolute inset-0 flex transition-all duration-700 pointer-events-none">
         <div
-          className={`relative w-1/2 h-full bg-cover bg-center transition-all duration-700 ${
-            isDay ? 'opacity-30' : ''
-          }`}
+          className={`relative w-1/2 h-full bg-cover bg-center transition-all duration-700`}
           style={{
             backgroundImage: `url(${isDay ? dayProductBg : nightOtherBg})`,
           }}
@@ -126,25 +112,19 @@ export default function ProductShowcase({page}) {
           }}
         >
           {!isDay && <div className="absolute inset-0 bg-black/70" />}
+          {/* {isDay && <div className="absolute inset-0 bg-white/70" />} */}
         </div>
       </div>
 
-      {/* Toggle - positioned same place as your screenshot */}
-      {/* Toggle - centered on screen */}
       <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none">
-        <div
-          className="w-44 h-28 rounded-2xl overflow-hidden flex items-center justify-center pointer-events-auto z-50"
-          // style={{ background: "#d7f7e0" }}
-        >
+        <div className="w-44 h-28 rounded-2xl overflow-hidden flex items-center justify-center pointer-events-auto z-50">
           <div className="p-2 pointer-events-auto">
             <DayNightToggle isDay={isDay} setIsDay={setIsDay} />
           </div>
         </div>
       </div>
 
-      {/* Content */}
       <div className="relative z-10 grid grid-cols-2 h-full transition-all duration-700">
-        {/* LEFT SIDE */}
         <div
           className={`flex flex-col justify-center items-center text-center px-8 transition-all duration-700 ${
             isDay ? 'order-1' : 'order-2'
@@ -194,7 +174,6 @@ export default function ProductShowcase({page}) {
           )}
         </div>
 
-        {/* RIGHT SIDE */}
         <div
           className={`flex flex-col justify-center items-center transition-all duration-700 ${
             isDay ? 'order-2' : 'order-1'

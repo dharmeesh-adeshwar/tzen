@@ -1,24 +1,22 @@
-import React,{useEffect} from "react";
+import React, {useEffect} from "react";
 import { Image } from "@shopify/hydrogen";
 import AOS from "aos";
 import "aos/dist/aos.css";
-export default function Hero({ page }) {
-useEffect(() => {
-  AOS.init({
-    duration: 1000,
-    once: false,
-    startEvent: "DOMContentLoaded", // ensure it fires on load
-  });
 
-  AOS.refreshHard();
-}, []);
+export default function Hero({ page }) {
+  useEffect(() => {
+    AOS.init({
+      duration: 1000,
+      once: false,
+      startEvent: "DOMContentLoaded",
+    });
+    AOS.refreshHard();
+  }, []);
 
   if (!page) return null;
 
-  // Helper to find metafields
   const findField = (key) => page?.metafields?.find((f) => f.key === key);
 
-  // Metafield values
   const heroImage = findField("image")?.reference?.image?.url || "";
   const heroLogo = findField("logo")?.reference?.image?.url || "";
   const leftText = findField("subheadingleft")?.value || "";
@@ -26,17 +24,8 @@ useEffect(() => {
   const rightText = findField("subheadingright")?.value || "";
   const rightText2 = findField("subheadingright2")?.value || "";
 
-  console.log("Hero data:", {
-    heroImage,
-    heroLogo,
-    leftText,
-    leftText2,
-    rightText,
-    rightText2,
-  });
-
   return (
-    <section className="sticky relative w-full h-screen overflow-hidden flex items-center justify-center z-0">
+    <section className="sticky top-0 w-full h-screen overflow-hidden flex items-center justify-center z-0">
       {/* Background image */}
       {heroImage && (
         <Image
@@ -60,11 +49,10 @@ useEffect(() => {
 
       {/* Bottom subheadings */}
       <div className="absolute bottom-10 left-0 right-0 flex justify-between items-end px-8 text-white z-10">
-        {/* Left text group */}
         {(leftText || leftText2) && (
-          <div className="flex flex-col items-start max-w-[45%] fade-right" data-aos="">
+          <div className="flex flex-col items-start max-w-[45%]" data-aos="fade-right">
             {leftText && (
-              <h2 className="text-lg md:text-2xl font-light text-left ">
+              <h2 className="text-lg md:text-xl font-light text-left">
                 {leftText}
               </h2>
             )}
@@ -76,14 +64,13 @@ useEffect(() => {
           </div>
         )}
 
-        {/* Right text group */}
         {(rightText || rightText2) && (
-          <div className="flex flex-col items-end max-w-[45%] text-right fade-left">
+          <div className="flex flex-col items-end max-w-[45%] text-right" data-aos="fade-left">
             {rightText && (
-              <h2 className="text-lg md:text-2xl font-light">{rightText}</h2>
+              <h2 className="text-lg md:text-xl font-light">{rightText}</h2>
             )}
             {rightText2 && (
-              <h3 className="text-base md:text-xl font-light opacity-80 ">
+              <h3 className="text-base md:text-xl font-light opacity-80">
                 {rightText2}
               </h3>
             )}
