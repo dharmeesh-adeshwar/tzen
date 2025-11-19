@@ -7,10 +7,16 @@ export default function Hero({ page }) {
   useEffect(() => {
     AOS.init({
       duration: 1000,
-      once: false,
+      once: true, // Changed to true so animations only happen once
       startEvent: "DOMContentLoaded",
+      offset: 0, // Trigger immediately when element is in view
+      disable: false, // Ensure AOS is enabled
     });
-    AOS.refreshHard();
+    
+    // Force trigger animations immediately on mount
+    setTimeout(() => {
+      AOS.refresh();
+    }, 100);
   }, []);
 
   if (!page) return null;
@@ -38,7 +44,11 @@ export default function Hero({ page }) {
       <div className="absolute inset-0 bg-black/20"></div>
 
       {/* Center logo */}
-      <div className="relative flex flex-col items-center justify-center text-white text-center px-6" data-aos="zoom-in">
+      <div 
+        className="relative flex flex-col items-center justify-center text-white text-center px-6" 
+        data-aos="zoom-in"
+        data-aos-delay="0"
+      >
         {heroLogo && (
           <Image
             data={{ url: heroLogo, altText: "Hero logo" }}
@@ -50,7 +60,11 @@ export default function Hero({ page }) {
       {/* Bottom subheadings */}
       <div className="absolute bottom-10 left-0 right-0 flex justify-between items-end px-8 text-white z-10">
         {(leftText || leftText2) && (
-          <div className="flex flex-col items-start max-w-[45%]" data-aos="fade-right">
+          <div 
+            className="flex flex-col items-start max-w-[45%]" 
+            data-aos="fade-right"
+            data-aos-delay="200"
+          >
             {leftText && (
               <h2 className="text-lg md:text-xl font-light text-left">
                 {leftText}
@@ -65,7 +79,11 @@ export default function Hero({ page }) {
         )}
 
         {(rightText || rightText2) && (
-          <div className="flex flex-col items-end max-w-[45%] text-right" data-aos="fade-left">
+          <div 
+            className="flex flex-col items-end max-w-[45%] text-right" 
+            data-aos="fade-left"
+            data-aos-delay="200"
+          >
             {rightText && (
               <h2 className="text-lg md:text-xl font-light">{rightText}</h2>
             )}
