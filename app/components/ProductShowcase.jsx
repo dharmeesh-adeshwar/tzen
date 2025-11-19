@@ -20,7 +20,8 @@ function DayNightToggle({isDay, setIsDay}) {
         </span>
       </div>
 
-      <div className="relative rounded-2xl p-1 bg-white/40 backdrop-blur-md border border-white/30 shadow-sm">
+      <div className="relative rounded-2xl p-1 bg-transparent backdrop-blur-md border border-white/30 shadow-sm">
+      {/* <div className="relative rounded-2xl p-1 bg-white/40 backdrop-blur-md border border-white/30 shadow-sm"> */}
         <div className="flex items-center gap-1 bg-transparent rounded-xl p-1">
           <button
             onClick={() => setIsDay(true)}
