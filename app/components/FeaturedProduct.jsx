@@ -24,7 +24,7 @@ export default function FeaturedProduct({page}) {
   return (
     <section
       className="
-        relative w-full min-h-screen 
+        sticky top-0 w-full min-h-screen 
         bg-center bg-no-repeat bg-cover 
         px-20 grid grid-cols-2 gap-[30%] z-50
       "
